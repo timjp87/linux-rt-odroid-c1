@@ -185,7 +185,8 @@ struct amlsd_host {
 
 	struct  mmc_request	*mrq;
 	struct  mmc_request	*mrq2;
-	spinlock_t	mrq_lock;
+	spinlock_t		mrq_lock;
+	raw_spinlock_t		raw_mrq_lock;
 	int			cmd_is_stop;
 	enum aml_mmc_waitfor	xfer_step;
 	enum aml_mmc_waitfor	xfer_step_prev;
@@ -676,17 +677,23 @@ extern struct mmc_host *sdio_host;
 #define print_dbg(fmt, args...) do{\
 	printk("[%s]\033[0;40;35m " fmt "\033[0m", __FUNCTION__, ##args);  \
 }while(0)
-
-//for external codec status, if using external codec, jtag should not be set. 
-// extern int ext_codec;
-
 #ifndef CONFIG_MESON_TRUSTZONE
+
+#ifdef CONFIG_SND_AML_M8_SOC
+//for external codec status, if using external codec, jtag should not be set. 
+extern int ext_codec;
+
 // P_AO_SECURE_REG1 is "Secure Register 1" in <M8-Secure-AHB-Registers.doc>
 #define aml_jtag_gpioao() do{\
     aml_clr_reg32_mask(P_AO_SECURE_REG1, ((1<<5) | (1<<9))); \
     if(0)\
         aml_set_reg32_mask(P_AO_SECURE_REG1, ((1<<8) | (1<<1))); \
 }while(0)
+#else
+#define aml_jtag_gpioao() do{\
+    aml_clr_reg32_mask(P_AO_SECURE_REG1, ((1<<5) | (1<<9))); \
+}while(0)
+#endif /* CONFIG_SND_AML_M8_SOC */
 
 #define aml_jtag_sd() do{\
     aml_clr_reg32_mask(P_AO_SECURE_REG1, ((1<<8) | (1<<1))); \
