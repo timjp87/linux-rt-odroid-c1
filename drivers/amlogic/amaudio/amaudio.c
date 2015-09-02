@@ -211,7 +211,7 @@ void audio_out_enabled(int flag)
   if(amaudio_out_started == 0)
     return;
 
-  local_irq_save(irqflags);
+  local_irq_save_nort(irqflags);
  
   if(flag){
     hwptr = get_audout_ptr();
@@ -241,7 +241,7 @@ void audio_out_enabled(int flag)
     int_out_enable = 0;
     printk("audio out closed\n");
   }  
-  local_irq_restore(irqflags);
+  local_irq_restore_nort(irqflags);
 }
 EXPORT_SYMBOL(audio_out_enabled);
 
@@ -252,7 +252,7 @@ void audio_in_enabled(int flag)
   if(amaudio_in_started == 0)
     return;
 
-  local_irq_save(irqflags);
+  local_irq_save_nort(irqflags);
   if(flag){
     hwptr = get_audin_ptr();
     tmp = (hwptr/3840) * 3840 + READ_MPEG_REG(AUDIN_FIFO0_START) + 3840;
@@ -283,7 +283,7 @@ void audio_in_enabled(int flag)
     level2 = 0;
     printk("audio in closed\n");
   }
-  local_irq_restore(irqflags);
+  local_irq_restore_nort(irqflags); 
 }
 EXPORT_SYMBOL(audio_in_enabled);
 
