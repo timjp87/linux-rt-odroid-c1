@@ -60,7 +60,9 @@
 #include <linux/page-debug-flags.h>
 #include <linux/hugetlb.h>
 #include <linux/sched/rt.h>
+#include <linux/locallock.h>
 #include <linux/sysctl.h>
+
 
 #include <asm/tlbflush.h>
 #include <asm/div64.h>
